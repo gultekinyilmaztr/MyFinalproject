@@ -12,4 +12,3 @@ namespace Core.Utilities.Security.JWT
         AccessToken CreateToken(User user, List<OperationClaim> operationClaims);
     }
 }
-//14.ders 2:05 te kaldım.
