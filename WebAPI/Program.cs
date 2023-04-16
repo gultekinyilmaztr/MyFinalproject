@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
@@ -51,10 +53,22 @@ builder.Services.AddDependencyResolvers(new ICoreModule[]
 //Autodac,Ninjet,CastleWindsor,StrucureMap,LightInject,DryInject --> IoC Container
 //AOP
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200/").AllowAnyHeader().AllowAnyOrigin();
+                      });
+});
+
 //builder.Services.AddSingleton<IProductService,ProductManager>(); // Tüm bellekte 1 manager oluþturuyor ve hepis bu referansý görüyor.Bu heryerde yapýlan kullaýnlan bir teknik olup api ye özel deðildir.
 //builder.Services.AddSingleton<IProductDal, EfProductDal>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -67,6 +81,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseCors(MyAllowSpecificOrigins);
+
+//app.UseCors(builder=>builder.WithOrigins("http://localhost:4200/").AllowAnyHeader());
+
+app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthentication();
 

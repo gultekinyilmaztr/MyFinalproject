@@ -21,12 +21,15 @@ namespace WebAPI.Controllers
             _productService = productService;
         }
 
-        [HttpGet("getall")]
+        [HttpGet(template:"getall")]
 
         public IActionResult GetAll()
         {
             //Swagger
             //Dependency chain --
+
+            Thread.Sleep(1000); //sayfa yükklenirken 5ms beklesin.
+
             var result = _productService.GetAll();
 
             if (result.Success)
